@@ -45,7 +45,7 @@ public class TestController {
     }
 
     /**
-     * 消息同步发送 性能差
+     * 消息同步发送 速度快  不容易丢消息
      * @return
      * @throws Exception
      */
@@ -63,7 +63,7 @@ public class TestController {
     }
 
     /**
-     * 异步发送消息 性能高
+     * 异步发送消息 速度快 不容易丢消息
      * @return
      * @throws Exception
      */
@@ -95,7 +95,7 @@ public class TestController {
 
     /**
      * 单向发送消息，
-     * 性能最高，可靠性最差
+     * 性能最高，不可靠（可能会丢消息）
      * 发送特点为发送方只负责发送消息，不等待服务器回应且没有回调函数触发，即只发送请求不等待应答()。 此方式发送消息的过程耗时非常短，一般在微秒级别。
      * @return
      * @throws Exception
@@ -114,6 +114,11 @@ public class TestController {
         return "成功";
     }
 
+    /**
+     * 发送事物消息
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/text/transcation/rocketmq")
     public Object callbackTranscation() throws Exception {
         //总共发送五次消息
