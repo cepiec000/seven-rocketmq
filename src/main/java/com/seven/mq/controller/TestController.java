@@ -4,6 +4,8 @@ import com.seven.mq.config.MqConfig;
 import com.seven.mq.producer.Producer;
 import com.seven.mq.producer.TransactionProducer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
+import org.apache.rocketmq.client.producer.LocalTransactionState;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
@@ -88,7 +90,7 @@ public class TestController {
                     System.out.printf("%-10d Exception %s %n", index, throwable);
                     throwable.printStackTrace();
                 }
-            });
+            },index);
         }
         return "成功";
     }
@@ -119,8 +121,8 @@ public class TestController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/text/transcation/rocketmq")
-    public Object callbackTranscation() throws Exception {
+    @RequestMapping("/text/transaction/rocketmq")
+    public Object callbackTransaction() throws Exception {
         //总共发送五次消息
         for (int i=0;i<mesList.size();i++) {
             final int index=i;
@@ -128,7 +130,13 @@ public class TestController {
             //创建生产信息
             Message message = new Message(MqConfig.TOPIC_TRANS, "transactionTag", ("小小一家人的称谓:" + s).getBytes());
             //事务发送
-            SendResult  sendResult= transactionProducer.getProducer().sendMessageInTransaction(message,"orgs");
+            SendResult  sendResult= transactionProducer.getProducer().sendMessageInTransaction(message, new LocalTransactionExecuter() {
+                @Override
+                public LocalTransactionState executeLocalTransactionBranch(Message message, Object o) {
+                    //TODO 本地事物逻辑
+                    return LocalTransactionState.COMMIT_MESSAGE;
+                }
+            }, null);
             System.out.printf("发送结果=%s, sendResult=%s \n", sendResult.getSendStatus(), sendResult.toString());
         }
         return "成功";
