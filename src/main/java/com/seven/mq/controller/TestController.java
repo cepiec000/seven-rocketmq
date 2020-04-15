@@ -74,7 +74,7 @@ public class TestController {
             final int index=i;
             String s=mesList.get(i);
             //创建生产信息
-            Message message = new Message(MqConfig.TOPIC, "testtag", ("小小一家人的称谓:" + s).getBytes());
+            Message message = new Message(MqConfig.TOPIC, "asyncTag", ("小小一家人的称谓:" + s).getBytes());
             //异步发送
             producer.getProducer().send(message, new SendCallback() {
                 @Override
@@ -107,7 +107,7 @@ public class TestController {
             final int index=i;
             String s=mesList.get(i);
             //创建生产信息
-            Message message = new Message(MqConfig.TOPIC, "testtag", ("小小一家人的称谓:" + s).getBytes());
+            Message message = new Message(MqConfig.TOPIC, "onewayTag", ("小小一家人的称谓:" + s).getBytes());
             //异步发送
             producer.getProducer().sendOneway(message);
         }
@@ -126,7 +126,7 @@ public class TestController {
             final int index=i;
             String s=mesList.get(i);
             //创建生产信息
-            Message message = new Message(MqConfig.TOPIC_TRANS, "test2tag", ("小小一家人的称谓:" + s).getBytes());
+            Message message = new Message(MqConfig.TOPIC_TRANS, "transactionTag", ("小小一家人的称谓:" + s).getBytes());
             //事务发送
             SendResult  sendResult= transactionProducer.getProducer().sendMessageInTransaction(message,"orgs");
             System.out.printf("发送结果=%s, sendResult=%s \n", sendResult.getSendStatus(), sendResult.toString());
